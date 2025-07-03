@@ -23,15 +23,13 @@ A Docker-based infrastructure project that sets up a secure, multi-service web e
 .
 ├── Makefile
 ├── README.md
-├── secrets/
-└── srcs/
-├── .env
-├── docker-compose.yml
-└── requirements/
-├── mariadb/
-├── nginx/
-└── wordpress/
-
+├── secrets
+└── srcs
+    ├── docker-compose.yml
+    └── requirements
+        ├── mariadb
+        ├── nginx
+        └── wordpress
 ```
 
 ---
