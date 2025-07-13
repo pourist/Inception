@@ -1,0 +1,20 @@
+version: '3.8'
+services:
+  mariadb:
+    build:
+      context: ./requirements/mariadb
+    container_name: mariadb
+    volumes:
+      - mariadb_data:/var/lib/mysql
+      - /home/ppour-ba/ppour-ba/42/Inception/secrets:/secrets:ro
+    restart: always
+    env_file:
+      - ./.env
+    networks:
+      - inception
+
+
+volumes:
+  mariadb_data:
+networks:
+  inception:
