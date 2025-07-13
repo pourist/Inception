@@ -88,4 +88,3 @@ A Docker-based infrastructure project that sets up a secure, multi-service web e
 - No hardcoded passwords in Dockerfiles
 - No infinite loops (`tail -f`, `sleep infinity`, etc.)
 - No use of `--link`, `network: host`, or legacy networking options
-```
