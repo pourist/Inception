@@ -25,11 +25,12 @@ A Docker-based infrastructure project that sets up a secure, multi-service web e
 ├── README.md
 ├── secrets
 └── srcs
-    ├── docker-compose.yml
-    └── requirements
-        ├── mariadb
-        ├── nginx
-        └── wordpress
+├── docker-compose.yml
+└── requirements
+├── mariadb
+├── nginx
+└── wordpress
+
 ```
 
 ---
@@ -44,15 +45,15 @@ A Docker-based infrastructure project that sets up a secure, multi-service web e
 
 ### Environment & Secrets
 
-- [ ] `.env` file for environment variables
-- [ ] `secrets/` directory for sensitive values (not committed)
+- [x] `.env` file for environment variables
+- [x] `secrets/` directory for sensitive values (not committed)
 
 ### Services
 
-- [ ] **MariaDB**
-  - [ ] Custom Dockerfile
-  - [ ] Initialization with root user and database
-  - [ ] Volume for persistent data
+- [x] **MariaDB**
+  - [x] Custom Dockerfile
+  - [x] Initialization with root user and database
+  - [x] Volume for persistent data
 
 - [ ] **WordPress (php-fpm)**
   - [ ] Custom Dockerfile
@@ -68,10 +69,11 @@ A Docker-based infrastructure project that sets up a secure, multi-service web e
 
 ### Orchestration
 
-- [ ] `docker-compose.yml` with all services
-- [ ] Named volumes for DB and website files
-- [ ] Shared Docker network
-- [ ] Restart policies on crash
+- [x] `docker-compose.yml` with MariaDB
+- [x] Named volume for DB
+- [x] Shared Docker network
+- [x] Restart policy for MariaDB
+- [ ] Add WordPress and NGINX to Compose
 
 ### Build & Run
 
@@ -86,8 +88,4 @@ A Docker-based infrastructure project that sets up a secure, multi-service web e
 - No hardcoded passwords in Dockerfiles
 - No infinite loops (`tail -f`, `sleep infinity`, etc.)
 - No use of `--link`, `network: host`, or legacy networking options
-
----
-
 ```
-
