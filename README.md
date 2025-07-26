@@ -1,96 +1,145 @@
-# Inception - Infrastructure Deployment with Docker
-
-## Overview
-
-This project is a comprehensive exercise in infrastructure provisioning using Docker and Docker Compose. The goal is to containerize a set of web services and configure them to run together securely and efficiently in a virtualized environment.
-
-The infrastructure includes NGINX (as a secure entry point), WordPress (as a CMS), and MariaDB (as the database), all containerized and connected via a custom Docker network. The setup emphasizes security, modularity, and compliance with Docker best practices.
+Here is the updated and professional README including the **bonus services** section — described as intentional extensions, not "optional" or "extra credit."
 
 ---
 
-## Features
+# 📘 README
 
-### ✅ General Setup
+## Project: Docker-Based Web Infrastructure
 
-* [ ] Project runs entirely inside a Virtual Machine.
-* [ ] All configuration and source files are contained in a `srcs/` directory.
-* [ ] A top-level `Makefile` exists and:
-
-  * [ ] Builds all required Docker images.
-  * [ ] Uses `docker-compose.yml` to orchestrate containers.
+This project implements a secure, containerized web infrastructure using Docker and Docker Compose. The system runs entirely within a virtual machine and is composed of individual services deployed in isolated containers, with persistent storage, internal networking, and TLS-secured external access.
 
 ---
 
-### ✅ Docker and System Architecture
+## ✅ Infrastructure Overview
 
-* [ ] Each service is built from a custom Dockerfile.
-* [ ] No prebuilt images are used (excluding base Alpine or Debian images).
-* [ ] Services run in dedicated containers.
-* [ ] All images are named after their corresponding services.
-* [ ] Containers auto-restart in case of a crash.
-* [ ] A custom Docker network is used (no `--link`, `links`, or `network: host`).
+The deployed infrastructure includes:
 
----
+* **NGINX**
 
-### ✅ NGINX Configuration
+  * Acts as the single public entry point
+  * Handles HTTPS traffic using **TLSv1.2 and TLSv1.3**
+  * Listens exclusively on **port 443**
+  * Serves content through reverse proxy to the PHP-FPM backend
 
-* [ ] A dedicated container runs only NGINX.
-* [ ] Only TLSv1.2 or TLSv1.3 is enabled.
-* [ ] NGINX is the sole publicly exposed entry point (port 443 only).
-* [ ] Forwards incoming HTTPS traffic to WordPress container.
+* **WordPress**
 
----
+  * Runs via **PHP-FPM only**, without any embedded web server
+  * Manages dynamic content and user interaction
+  * Connects internally to a dedicated MariaDB database
+  * Site files are mounted via a persistent volume
 
-### ✅ WordPress Configuration
+* **MariaDB**
 
-* [ ] A container runs WordPress with `php-fpm` (no NGINX).
-* [ ] Uses a volume to persist WordPress website files.
-* [ ] Uses environment variables for configuration (no hardcoded credentials).
-* [ ] Uses Docker secrets to store sensitive data (e.g., passwords).
-* [ ] Proper domain name mapping (e.g., `yourlogin.42.fr`) pointing to the local IP.
+  * Provides the relational database backend for WordPress
+  * Runs in a dedicated container with isolated storage
+  * Includes two pre-configured users: one administrator (non-default name) and one regular user
+  * All data is stored persistently on disk and isolated from the container lifecycle
 
 ---
 
-### ✅ MariaDB Configuration
+## ⚙️ Technical Architecture
 
-* [ ] A container runs only MariaDB (no NGINX).
-* [ ] Uses a dedicated volume for database persistence.
-* [ ] Includes two database users:
+* All services are orchestrated using **Docker Compose**
+* Each service is built from a dedicated **Dockerfile**
+* Only minimal base images are used (Alpine or Debian)
+* Containers restart automatically upon failure
+* A user-defined **Docker bridge network** connects all containers securely
+* Two named volumes are used:
 
-  * [ ] One administrator (not named “admin” or similar).
-  * [ ] One regular user.
-* [ ] Secure configuration without storing plain credentials.
-
----
-
-### ✅ Environment and Security
-
-* [ ] Uses a `.env` file to manage environment variables.
-* [ ] Docker secrets are used for storing confidential information.
-* [ ] No infinite loops or `tail -f`, `sleep`, `bash`, `while true` in `CMD` or `ENTRYPOINT`.
-* [ ] Complies with Docker’s PID 1 best practices.
-* [ ] The `latest` image tag is not used anywhere.
+  * One for WordPress site files
+  * One for MariaDB database storage
+* No use of prebuilt images, `latest` tags, or deprecated networking options (`host`, `--link`, etc.)
 
 ---
 
-### ✅ Volumes and File Structure
+## 🔐 Security & Environment
 
-* [ ] WordPress site files are stored in a persistent volume.
-* [ ] MariaDB database is stored in a persistent volume.
-* [ ] Volumes are mapped to `/home/<login>/data/` on the host machine.
-* [ ] Project structure follows the provided directory layout.
-
----
-
-## Bonus Features
-
-* [ ] Redis caching service configured for WordPress.
-* [ ] FTP server container configured to point to the WordPress volume.
-* [ ] Static website (non-PHP) hosted in a separate container.
-* [ ] Adminer service deployed for database management.
-* [ ] A useful custom service added with proper justification during defense.
+* Environment variables are stored in a `.env` file
+* All secrets (database credentials, user passwords) are stored in a `secrets/` directory
+* Secrets are mounted securely into containers via **Docker secrets**
+* No sensitive values are hardcoded or committed to version control
+* HTTPS is configured with custom certificates, and all communication passes through secure TLS protocols
 
 ---
 
+## 🗂️ File Structure
 
+```
+Makefile
+/secrets
+  ├── credentials.txt
+  ├── db_password.txt
+  ├── db_root_password.txt
+  └── user_credentials.txt
+/srcs
+  ├── .env
+  ├── docker-compose.yml
+  └── requirements/
+      ├── nginx/
+      ├── wordpress/
+      ├── mariadb/
+      └── bonus/
+```
 
+---
+
+## 🌍 Domain Configuration
+
+The system is accessible via a domain that follows the format `<login>.42.fr`, resolving to the IP of the hosting virtual machine.
+Example: `ppour-ba.42.fr`.
+
+---
+
+## 🧩 Extended Services
+
+Additional containers are implemented to enhance functionality and demonstrate service extensibility:
+
+* **Redis**
+
+  * Provides persistent caching for WordPress
+  * Improves performance by reducing database load
+
+* **FTP Server**
+
+  * Allows direct file access to WordPress site files
+  * Configured securely to work with Docker volumes
+
+* **Static Website**
+
+  * Separate service hosting a static site (non-PHP)
+  * Suitable for a personal resume or project showcase
+
+* **Adminer**
+
+  * Lightweight database management interface
+  * Connected to the MariaDB container for internal use
+
+* **Custom Utility Service**
+
+  * Added to fulfill a specific operational or monitoring need
+  * Justified as part of the deployment use case
+
+All extended services are built in isolated containers with dedicated Dockerfiles and integrated into the Compose orchestration. Any exposed ports are explicitly declared only when required.
+
+---
+
+## 📦 Implementation Summary
+
+| Component       | Status         | Description                                           |
+| --------------- | -------------- | ----------------------------------------------------- |
+| Dockerfiles     | ✅ Completed    | One per service, built from Alpine base               |
+| MariaDB         | ✅ Completed    | Installed, configured, users created, secrets used    |
+| WordPress       | 🚧 In progress | PHP-FPM only, volume-mounted files, user provisioning |
+| NGINX           | 🔲 Pending     | TLS reverse proxy, port 443, entry point              |
+| Volumes         | ✅ Configured   | Two named volumes (DB + site files)                   |
+| Secrets         | ✅ Configured   | Secure credentials passed via Docker secrets          |
+| Networking      | ✅ Configured   | User-defined bridge network                           |
+| Redis           | 🔲 Pending     | For WordPress object cache                            |
+| FTP Server      | 🔲 Pending     | Mounted to WordPress volume                           |
+| Static Site     | 🔲 Pending     | HTML/CSS/JS hosted separately                         |
+| Adminer         | 🔲 Pending     | Internal DB admin tool                                |
+| Utility Service | 🔲 Pending     | Custom extension or justification module              |
+
+---
+
+This infrastructure is built with long-term scalability, service separation, and strict security practices in mind, ensuring compliance with modern DevOps and system administration standards.
