@@ -92,6 +92,5 @@ The infrastructure includes NGINX (as a secure entry point), WordPress (as a CMS
 
 ---
 
-```
 
 
