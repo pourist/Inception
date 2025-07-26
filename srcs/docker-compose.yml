@@ -3,19 +3,81 @@ version: '3.8'
 services:
   mariadb:
     build:
-      context: ./requirements/mariadb
+      context: .
+      dockerfile: ./requirements/mariadb/Dockerfile
     container_name: mariadb
-    volumes:
-      - mariadb_data:/var/lib/mysql
-    restart: always
-    env_file:
-      - .env
     networks:
       - inception
+    volumes:
+      - mariadb:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD_FILE: ${MYSQL_PASSWORD_FILE}
+      MYSQL_ROOT_PASSWORD_FILE: ${MYSQL_ROOT_PASSWORD_FILE}
+    secrets:
+      - db_password.txt
+      - db_root_password.txt
+    restart: always
+
+  nginx:
+    build:
+      context: .
+      dockerfile: ./requirements/nginx/Dockerfile
+    container_name: nginx
+    depends_on:
+      - wordpress
+    ports:
+    - "443:443"
+    networks:
+      - inception
+    restart: always
+    volumes:
+      -  ./requirements/nginx/conf/:/etc/nginx/conf.d/
+      - ./requirements/nginx/tools:/etc/nginx/ssl/
+      -  wordpress_files:/var/www/wordpress
+
+  wordpress:
+    build:
+      context: .
+      dockerfile: ./requirements/wordpress/Dockerfile
+    container_name: wordpress
+    depends_on:
+      - mariadb
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD_FILE: ${MYSQL_PASSWORD_FILE}
+      WP_ADMIN_USER: ${WP_ADMIN_USER}
+      WP_ADMIN_PASSWORD_FILE: ${WP_ADMIN_PASSWORD_FILE}
+      WP_ADMIN_EMAIL: ${WP_ADMIN_EMAIL}
+      WP_USER: ${WP_USER}
+      WP_USER_PASSWORD_FILE: ${WP_USER_PASSWORD_FILE}
+      WP_USER_EMAIL: ${WP_USER_EMAIL}
+    restart: always
+    networks: 
+      - inception
+    volumes:
+      -  wordpress_files:/var/www/wordpress
+    secrets:
+      - db_password.txt
+      - credentials.txt
+      - user_credentials.txt
 
 volumes:
-  mariadb_data:
+  wordpress_files:
+  mariadb:
 
 networks:
   inception:
     driver: bridge
+
+secrets:
+  db_password.txt:
+    file: ../secrets/db_password.txt
+  db_root_password.txt:
+    file: ../secrets/db_root_password.txt
+  credentials.txt:
+    file: ../secrets/credentials.txt
+  user_credentials.txt:
+    file: ../secrets/user_credentials.txt
