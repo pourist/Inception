@@ -54,6 +54,8 @@ services:
       WP_USER: ${WP_USER}
       WP_USER_PASSWORD_FILE: ${WP_USER_PASSWORD_FILE}
       WP_USER_EMAIL: ${WP_USER_EMAIL}
+      WORDPRESS_URL: https://${DOMAIN_NAME}
+      DOMAIN_NAME: ${DOMAIN_NAME}
     restart: always
     networks: 
       - inception

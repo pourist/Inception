@@ -30,7 +30,7 @@ fi
 
 # Install WordPress core (if not already installed)
 if ! wp core is-installed --allow-root; then
-    wp core install --url="$DOMAIN" \
+    wp core install --url="https://$DOMAIN" \
                     --title="Inception" \
                     --admin_user="$ADMIN_USER" \
                     --admin_password="$ADMIN_PASS" \
