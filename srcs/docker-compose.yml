@@ -33,9 +33,9 @@ services:
       - inception
     restart: always
     volumes:
-      -  ./requirements/nginx/conf/:/etc/nginx/conf.d/
+      - ./requirements/nginx/conf/default.conf:/etc/nginx/conf.d/default.conf
       - ./requirements/nginx/tools:/etc/nginx/ssl/
-      -  wordpress_files:/var/www/wordpress
+      - wordpress_files:/var/www/wordpress
 
   wordpress:
     build:
