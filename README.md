@@ -126,7 +126,7 @@ All extended services are built in isolated containers with dedicated Dockerfile
 | Dockerfiles     | ✅ Completed    | One per service, built from Alpine base               |
 | MariaDB         | ✅ Completed    | Installed, configured, users created, secrets used    |
 | WordPress       | ✅ In progress | PHP-FPM only, volume-mounted files, user provisioning |
-| NGINX           | 🚧 Pending     | TLS reverse proxy, port 443, entry point              |
+| NGINX           | ✅ Pending     | TLS reverse proxy, port 443, entry point              |
 | Volumes         | ✅ Configured   | Two named volumes (DB + site files)                   |
 | Secrets         | ✅ Configured   | Secure credentials passed via Docker secrets          |
 | Networking      | ✅ Configured   | User-defined bridge network                           |
