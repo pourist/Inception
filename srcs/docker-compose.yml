@@ -106,6 +106,21 @@ services:
       - inception
     restart: always
 
+  ftp:
+    build:
+      context: ./requirements/bonus/ftp
+    container_name: ftp
+    ports:
+      - "21:21"
+      - "30000-30009:30000-30009"
+    volumes:
+      - wordpress_data:/var/www
+    networks:
+      - inception
+    restart: always
+    secrets:
+      - ftp_password.txt
+
 volumes:
   wordpress_files:
     driver_opts:
@@ -117,7 +132,8 @@ volumes:
       o: bind
       type: none
       device: /home/${USER}/data/mariadb
-      
+  wordpress_data:
+
 networks:
   inception:
     driver: bridge
@@ -131,3 +147,5 @@ secrets:
     file: ../secrets/credentials.txt
   user_credentials.txt:
     file: ../secrets/user_credentials.txt
+  ftp_password.txt:
+    file: ../secrets/ftp_password.txt
