@@ -17,6 +17,7 @@ RUN apk update && apk upgrade && apk add --no-cache \
     php${PHP_VERSION}-xml \
     php${PHP_VERSION}-zip \
     php${PHP_VERSION}-redis \
+    php${PHP_VERSION}-ctype \
     wget \
     unzip \
     bash \
