@@ -1,5 +1,3 @@
-# 📘 README
-
 ## Project: Docker-Based Web Infrastructure
 
 This project implements a secure, containerized web infrastructure using Docker and Docker Compose. The system runs entirely within a virtual machine and is composed of individual services deployed in isolated containers, with persistent storage, internal networking, and TLS-secured external access.
@@ -66,7 +64,8 @@ Makefile
   ├── credentials.txt
   ├── db_password.txt
   ├── db_root_password.txt
-  └── user_credentials.txt
+  ├── user_credentials.txt
+  └── ftp_password.txt
 /srcs
   ├── .env
   ├── docker-compose.yml
@@ -75,6 +74,11 @@ Makefile
       ├── wordpress/
       ├── mariadb/
       └── bonus/
+          ├── redis/
+          ├── ftp/
+          ├── static-site/
+          ├── adminer/
+          └── monitor/
 ```
 
 ---
@@ -82,7 +86,7 @@ Makefile
 ## 🌍 Domain Configuration
 
 The system is accessible via a domain that follows the format `<login>.42.fr`, resolving to the IP of the hosting virtual machine.
-Example: `ppour-ba.42.fr`.
+**Example:** `ppour-ba.42.fr`
 
 ---
 
@@ -92,50 +96,55 @@ Additional containers are implemented to enhance functionality and demonstrate s
 
 * **Redis**
 
-  * Provides persistent caching for WordPress
-  * Improves performance by reducing database load
+  * Provides persistent object caching for WordPress
+  * Improves performance by reducing database queries
 
 * **FTP Server**
 
-  * Allows direct file access to WordPress site files
-  * Configured securely to work with Docker volumes
+  * Provides file-level access to WordPress files
+  * User credentials handled via Docker secrets
+  * Passive ports configured for compatibility
 
 * **Static Website**
 
-  * Separate service hosting a static site (non-PHP)
-  * Suitable for a personal resume or project showcase
+  * Independent service hosting a static HTML/JS site (no PHP)
+  * Served via a lightweight Alpine-based server
 
 * **Adminer**
 
-  * Lightweight database management interface
-  * Connected to the MariaDB container for internal use
+  * Lightweight web-based interface to interact with MariaDB
+  * Accessible internally for administration and testing
 
-* **Custom Utility Service**
+* **Monitor**
 
-  * Added to fulfill a specific operational or monitoring need
-  * Justified as part of the deployment use case
+  * Lightweight system monitoring service
+  * Justified as useful for tracking container status and resource usage
 
-All extended services are built in isolated containers with dedicated Dockerfiles and integrated into the Compose orchestration. Any exposed ports are explicitly declared only when required.
+All bonus services are built from Alpine base images and integrated into the Compose network and volume structure. Each is isolated and configured securely.
 
 ---
 
 ## 📦 Implementation Summary
 
-| Component       | Status         | Description                                           |
-| --------------- | -------------- | ----------------------------------------------------- |
-| Dockerfiles     | ✅ Completed    | One per service, built from Alpine base               |
-| MariaDB         | ✅ Completed    | Installed, configured, users created, secrets used    |
-| WordPress       | ✅ In progress | PHP-FPM only, volume-mounted files, user provisioning |
-| NGINX           | ✅ Pending     | TLS reverse proxy, port 443, entry point              |
-| Volumes         | ✅ Configured   | Two named volumes (DB + site files)                   |
-| Secrets         | ✅ Configured   | Secure credentials passed via Docker secrets          |
-| Networking      | ✅ Configured   | User-defined bridge network                           |
-| Redis           | 🔲 Pending     | For WordPress object cache                            |
-| FTP Server      | 🔲 Pending     | Mounted to WordPress volume                           |
-| Static Site     | 🔲 Pending     | HTML/CSS/JS hosted separately                         |
-| Adminer         | 🔲 Pending     | Internal DB admin tool                                |
-| Utility Service | 🔲 Pending     | Custom extension or justification module              |
+| Component   | Status      | Description                                      |
+| ----------- | ----------- | ------------------------------------------------ |
+| Dockerfiles | ✅ Completed | One per service, all Alpine-based                |
+| MariaDB     | ✅ Completed | Users, secrets, volumes configured               |
+| WordPress   | ✅ Completed | PHP-FPM only, volume-mounted, secrets used       |
+| NGINX       | ✅ Completed | TLS reverse proxy, single entry point            |
+| Volumes     | ✅ Completed | Persistent data for DB and WordPress             |
+| Secrets     | ✅ Completed | Used for all credentials (no plaintext in env)   |
+| Networking  | ✅ Completed | User-defined bridge network                      |
+| Redis       | ✅ Completed | WordPress object caching via PhpRedis            |
+| FTP Server  | ✅ Completed | Secure FTP access to WordPress files via secrets |
+| Static Site | ✅ Completed | Pure HTML/JS site served from Alpine container   |
+| Adminer     | ✅ Completed | Lightweight DB interface                         |
+| Monitor     | ✅ Completed | Bonus utility: live system monitoring service    |
 
 ---
 
-This infrastructure is built with long-term scalability, service separation, and strict security practices in mind, ensuring compliance with modern DevOps and system administration standards.
+## ✅ Completion Statement
+
+This project implements a robust, secure, and modular web infrastructure suitable for deployment, education, and operational demonstration. All mandatory and bonus components have been implemented in strict adherence to the subject’s requirements using best practices in system administration and containerization.
+
+
