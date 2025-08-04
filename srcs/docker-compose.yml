@@ -97,6 +97,15 @@ services:
       - inception
     restart: always
 
+  monitor:
+    build: ./requirements/bonus/monitor
+    container_name: monitor
+    ports:
+      - "19999:19999"
+    networks:
+      - inception
+    restart: always
+
 volumes:
   wordpress_files:
     driver_opts:
