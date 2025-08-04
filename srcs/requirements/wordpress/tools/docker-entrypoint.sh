@@ -45,4 +45,22 @@ if ! wp core is-installed --allow-root; then
                    --allow-root
 fi
 
+# Install Redis plugin if not already installed
+if ! wp plugin is-installed redis-cache --allow-root; then
+    wp plugin install redis-cache --activate --allow-root
+fi
+
+# Insert Redis config into wp-config.php if not present
+if ! grep -q "WP_REDIS_HOST" wp-config.php; then
+    sed -i "/require_once ABSPATH . 'wp-settings.php';/i \
+define( 'WP_REDIS_HOST', 'redis' );\n\
+define( 'WP_REDIS_PORT', 6379 );\n\
+define( 'WP_REDIS_TIMEOUT', 1 );\n\
+define( 'WP_REDIS_READ_TIMEOUT', 1 );\n\
+define( 'WP_REDIS_DATABASE', 0 );\n" wp-config.php
+fi
+
+# Enable Redis object cache
+wp redis enable --allow-root || true
+
 exec php-fpm -F
